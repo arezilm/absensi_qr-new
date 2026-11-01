@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absensi &amp; Kupon Makan QR</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <div class="login-brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 8V6a2 2 0 0 1 2-2h2"/>
+            <path d="M16 4h2a2 2 0 0 1 2 2v2"/>
+            <path d="M20 16v2a2 2 0 0 1-2 2h-2"/>
+            <path d="M8 20H6a2 2 0 0 1-2-2v-2"/>
+            <rect x="9" y="9" width="6" height="6" rx="1.2"/>
+          </svg>
+        </div>
+        <h1>Absensi QR</h1>
+        <p>Sistem Absensi &amp; Kupon Makan</p>
+      </div>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="login-field">
+          <label for="loginUser">Username</label>
+          <input type="text" id="loginUser" placeholder="Masukkan username" required />
+        </div>
+
+        <div class="login-field">
+          <label for="loginPass">Password</label>
+          <input type="password" id="loginPass" placeholder="Masukkan password" required />
+        </div>
+
+        <div class="login-error" id="loginError" role="alert"></div>
+
+        <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-text">Main menu</span>
+        <button type="button" class="btn-hamburger btn-hamburger-sidebar" id="btnSidebarClose" aria-label="Tutup menu navigasi" aria-expanded="true" aria-controls="sidebar">
+          <span aria-hidden="true">-</span>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" data-tab="dashboard">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7.5" height="7.5" rx="2"/>
+              <rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/>
+              <rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/>
+              <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/>
+            </svg>
+          </span>
+          <span class="nav-label">Dashboard</span>
+        </button>
+
+        <div class="nav-group">
+          <button type="button" class="nav-item nav-parent" id="navMasterToggle" aria-expanded="false" aria-controls="navMasterSubmenu">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5.5" rx="7.5" ry="3"/>
+                <path d="M4.5 5.5v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-6"/>
+                <path d="M4.5 11.5v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-6"/>
+              </svg>
+            </span>
+            <span class="nav-label">Master Data</span>
+            <span class="nav-caret">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="nav-submenu" id="navMasterSubmenu">
+            <button type="button" class="nav-subitem" data-tab="karyawan">Karyawan</button>
+            <button type="button" class="nav-subitem" data-tab="foto">Foto</button>
+            <button type="button" class="nav-subitem" data-tab="kartu">Kartu</button>
+            <button type="button" class="nav-subitem" data-tab="jenis-kartu">Jenis Kartu</button>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <button type="button" class="nav-item nav-parent" id="navTransaksiToggle" aria-expanded="false" aria-controls="navTransaksiSubmenu">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 3h12a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/>
+                <path d="M9 8h6M9 12h6M9 16h3"/>
+              </svg>
+            </span>
+            <span class="nav-label">Transaksi</span>
+            <span class="nav-caret">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="nav-submenu" id="navTransaksiSubmenu">
+            <button type="button" class="nav-subitem" data-tab="reservasi">Reservasi</button>
+            <button type="button" class="nav-subitem" data-tab="reservasi-overtime">Reservasi Overtime</button>
+            <button type="button" class="nav-subitem" data-tab="release-reservasi">Release Reservasi</button>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <button type="button" class="nav-item nav-parent" id="navPresensiToggle" aria-expanded="false" aria-controls="navPresensiSubmenu">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="4" width="16" height="17" rx="2"/>
+                <path d="M9 2v4M15 2v4M4 10h16"/>
+                <path d="m9 16 2 2 4-4"/>
+              </svg>
+            </span>
+            <span class="nav-label">Presensi</span>
+            <span class="nav-caret">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="nav-submenu" id="navPresensiSubmenu">
+            <button type="button" class="nav-subitem" data-tab="presensi">Presensi</button>
+          </div>
+        </div>
+
+        <!-- MENU PENGATURAN (Hanya untuk Admin) -->
+        <div class="nav-group" id="navPengaturanGroup" style="display: none;">
+          <button type="button" class="nav-item nav-parent" id="navPengaturanToggle" aria-expanded="false" aria-controls="navPengaturanSubmenu">
+            <span class="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </span>
+            <span class="nav-label">Pengaturan</span>
+            <span class="nav-caret">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="nav-submenu" id="navPengaturanSubmenu">
+            <button type="button" class="nav-subitem" data-tab="kelola-user">Kelola User</button>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button type="button" class="btn-hamburger btn-hamburger-topbar" id="btnSidebarToggle" aria-label="Buka menu navigasi" aria-expanded="true" aria-controls="sidebar">
+            <span aria-hidden="true">≡</span>
+          </button>
+          <button type="button" class="btn-hamburger btn-hamburger-home" id="btnHome" aria-label="Kembali ke Dashboard" title="Kembali ke Dashboard">
+            <span aria-hidden="true">⌂</span>
+          </button>
+          <h2 class="topbar-title" id="topbarTitle">Dashboard</h2>
+        </div>
+
+        <div class="topbar-right">
+          <span class="user-name" id="userName">Admin</span>
+          <div class="avatar" id="userAvatar">A</div>
+          <button type="button" class="btn btn-danger btn-sm" id="btnLogout" title="Keluar">Keluar</button>
+        </div>
+      </header>
+
+      <main class="content">
+        <!-- PANEL DASHBOARD -->
+        <section class="panel active" id="panel-dashboard">
+          <div class="mb-16">
+            <div class="scan-card scan-card-single">
+              <div class="scan-head">
+                <h4>Scan QR Karyawan</h4>
+                <p>Scan pertama mencatat <strong>absensi</strong>, scan berikutnya mencatat pengambilan <strong>kupon makan</strong>.</p>
+              </div>
+              <div id="reader"></div>
+              <div class="scan-controls">
+                <button type="button" class="btn btn-success" data-scan-start="qr">Mulai Scan</button>
+                <button type="button" class="btn btn-danger" data-scan-stop>Stop</button>
+              </div>
+              <div class="result" id="resultScan"></div>
+            </div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="dash-col-main">
+              <h3 class="block-title">Aktivitas Absensi</h3>
+              <div class="stats-cards">
+                <div class="stat-card"><div class="stat-num blue" id="statTotal">0</div><div class="stat-lbl">Total Karyawan</div></div>
+                <div class="stat-card"><div class="stat-num red" id="statBelum">0</div><div class="stat-lbl">Belum Absensi</div></div>
+                <div class="stat-card"><div class="stat-num green" id="statHadir">0</div><div class="stat-lbl">Sudah Absensi</div></div>
+                <div class="stat-card"><div class="stat-num blue" id="statMakan">0</div><div class="stat-lbl">Sudah Ambil Makan</div></div>
+              </div>
+              <div class="info-row">
+                <div class="info-card">
+                  <div class="info-header"><h4>DETAIL KARYAWAN</h4></div>
+                  <div class="info-body">
+                    <ul class="info-list">
+                      <li><span class="text-red">Belum Absensi</span><span class="val text-red" id="detailBelum">0</span></li>
+                      <li><span>Sudah Absensi</span><span class="val" id="detailHadir">0</span></li>
+                      <li><span>Sudah Ambil Makan</span><span class="val" id="detailMakan">0</span></li>
+                      <li><span>Total Karyawan</span><span class="val" id="detailTotal">0</span></li>
+                      <li><span class="text-red">Kehadiran Rendah</span><span class="val text-red" id="detailLow">0</span></li>
+                    </ul>
+                    <div class="donut-wrap">
+                      <div class="donut" id="donutChart"><div class="donut-hole"><span id="donutPercent">0%</span></div></div>
+                      <div class="donut-label">Kehadiran</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="info-card">
+                  <div class="info-header"><h4>RIWAYAT SCAN</h4></div>
+                  <div class="table-wrapper table-scroll">
+                    <table class="order-table order-table-compact">
+                      <thead><tr><th>Waktu</th><th>Nama</th><th>Jenis</th></tr></thead>
+                      <tbody id="riwayat"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="dash-col-side">
+              <h3 class="block-title">Ringkasan</h3>
+              <div class="summary-card">
+                <div class="summary-row"><div class="summary-lbl">TOTAL KARYAWAN</div><div class="summary-val" id="sumTotal">0</div></div>
+                <div class="summary-row"><div class="summary-lbl">SUDAH ABSENSI</div><div class="summary-val" id="sumHadir">0</div></div>
+                <div class="summary-row"><div class="summary-lbl">SUDAH MAKAN</div><div class="summary-val" id="sumMakan">0</div></div>
+                <div class="summary-row"><div class="summary-lbl">BELUM ABSENSI</div><div class="summary-val" id="sumBelum">0</div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL KARYAWAN -->
+        <section class="panel" id="panel-karyawan">
+          <div class="panel-actions"><button type="button" class="btn btn-primary" id="btnTambahKaryawan">Tambah Karyawan</button></div>
+          <div class="info-card">
+            <div class="info-header"><h4>DAFTAR KARYAWAN</h4><input type="text" class="search-bar" id="searchKaryawan" placeholder="Cari nama / ID..." autocomplete="off" /></div>
+            <div class="table-wrapper">
+              <table id="tabelKaryawan" class="order-table">
+                <thead><tr><th class="col-no">No</th><th class="sortable" data-sort="id">ID</th><th class="sortable" data-sort="nama">Nama</th><th>Posisi</th><th>Bagian</th><th>Kategori</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL FOTO -->
+        <section class="panel" id="panel-foto">
+          <div class="info-card">
+            <div class="info-header"><h4>DAFTAR FOTO KARYAWAN</h4><input type="text" class="search-bar" id="searchFoto" placeholder="Cari nama / ID..." autocomplete="off" /></div>
+            <div class="table-wrapper">
+              <table id="tabelFoto" class="order-table">
+                <thead><tr><th class="col-no">No</th><th class="sortable" data-sort="id">ID</th><th class="sortable" data-sort="nama">Nama</th><th>Foto</th><th>Bagian</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL KARTU -->
+        <section class="panel" id="panel-kartu">
+          <div class="panel-actions"><button type="button" class="btn btn-primary" id="btnPrint">Cetak Semua</button></div>
+          <div class="info-card">
+            <div class="info-header"><h4>DAFTAR KARTU</h4><input type="text" class="search-bar" id="searchKartu" placeholder="Cari nama / ID..." autocomplete="off" /></div>
+            <div class="table-wrapper">
+              <table id="tabelKartu" class="order-table">
+                <thead><tr><th class="col-no">No</th><th class="sortable" data-sort="id">ID</th><th class="sortable" data-sort="nama">Nama</th><th>Status Kartu</th><th>Status Cetak</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="printArea"></div>
+        </section>
+
+        <!-- PANEL JENIS KARTU -->
+        <section class="panel" id="panel-jenis-kartu">
+          <div class="panel-actions"><button type="button" class="btn btn-primary" id="btnTambahJenisKartu">Tambah Jenis Kartu</button></div>
+          <div class="info-card">
+            <div class="info-header"><h4>DAFTAR JENIS KARTU</h4><input type="text" class="search-bar" id="searchJenisKartu" placeholder="Cari nama / ID / keterangan..." autocomplete="off" /></div>
+            <div class="table-wrapper">
+              <table id="tabelJenisKartu" class="order-table">
+                <thead><tr><th class="col-no">No</th><th class="sortable" data-sort="id">ID</th><th class="sortable" data-sort="nama">Nama</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL RESERVASI -->
+        <section class="panel" id="panel-reservasi">
+          <div class="panel-actions"><button type="button" class="btn btn-primary" id="btnTambahReservasi">Tambah Reservasi</button></div>
+          <div class="info-card">
+            <div class="info-header"><h4>DAFTAR RESERVASI</h4><input type="date" class="search-bar" id="filterReservasiTanggal" title="Filter tanggal" /><input type="text" class="search-bar" id="searchReservasi" placeholder="Cari kode transaksi / bagian..." autocomplete="off" /></div>
+            <div class="table-wrapper">
+              <table id="tabelReservasi" class="order-table">
+                <thead><tr><th class="col-no">No</th><th>Kode Transaksi</th><th>Tanggal</th><th>Bagian</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL RESERVASI OVERTIME -->
+        <section class="panel" id="panel-reservasi-overtime">
+          <div class="form-card">
+            <form id="formOvertime" autocomplete="off">
+              <div class="form-grid">
+                <input type="text" id="otId" list="otIdDatalist" placeholder="ID Karyawan" required />
+                <datalist id="otIdDatalist"></datalist>
+                <input type="text" id="otNama" readonly placeholder="Nama (otomatis)" />
+                <input type="date" id="otTanggal" required />
+                <button type="submit" class="btn btn-primary">Reset Reservasi</button>
+              </div>
+            </form>
+          </div>
+          <div class="info-card mt-16">
+            <div class="info-header"><h4>DAFTAR OVERTIME</h4><input type="date" class="search-bar" id="filterOvertimeTanggal" title="Filter tanggal" /><input type="text" class="search-bar" id="searchOvertime" placeholder="Cari nama / ID..." autocomplete="off" /></div>
+            <div class="table-wrapper">
+              <table id="tabelOvertime" class="order-table">
+                <thead><tr><th>ID</th><th>Nama</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL RELEASE RESERVASI -->
+        <section class="panel" id="panel-release-reservasi">
+          <div class="info-card">
+            <div class="info-header"><h4>DAFTAR RELEASE RESERVASI</h4><input type="date" class="search-bar" id="filterReleaseTanggal" title="Filter tanggal" /></div>
+            <div class="table-wrapper">
+              <table id="tabelReleaseReservasi" class="order-table">
+                <thead><tr><th class="col-no">No</th><th>Kode Transaksi</th><th>Tanggal</th><th>Status</th><th>Bagian</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL PRESENSI -->
+        <section class="panel" id="panel-presensi">
+          <div class="info-card">
+            <div class="info-header">
+              <h4>DAFTAR PRESENSI</h4>
+              <input type="date" class="search-bar" id="filterPresensiTanggal" title="Filter tanggal" />
+              <input type="text" class="search-bar" id="searchPresensi" placeholder="Cari ID / nama / bagian..." autocomplete="off" />
+            </div>
+            <div class="table-wrapper">
+              <table id="tabelPresensi" class="order-table">
+                <thead><tr><th class="col-no">No</th><th>ID</th><th>Nama</th><th>Bagian</th><th>Tanggal</th><th>Jam Masuk</th><th>Jam Keluar</th><th>Status</th><th>Aksi</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PANEL KELOLA USER -->
+        <section class="panel" id="panel-kelola-user">
+          <div class="panel-actions">
+            <button type="button" class="btn btn-primary" id="btnTambahUser">Tambah User</button>
+          </div>
+          <div class="info-card">
+            <div class="info-header">
+              <h4>DAFTAR USER</h4>
+              <input type="text" class="search-bar" id="searchUser" placeholder="Cari username / nama..." autocomplete="off" />
+            </div>
+            <div class="table-wrapper">
+              <table id="tabelUser" class="order-table">
+                <thead>
+                  <tr>
+                    <th class="col-no">No</th>
+                    <th>Username</th>
+                    <th>Nama</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <!-- Modal Tambah Karyawan -->
+  <div class="modal-overlay" id="modalKaryawan" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalKaryawanTitle">
+      <div class="modal-head">
+        <h3 id="modalKaryawanTitle">Tambah Karyawan Baru</h3>
+        <button type="button" class="modal-close" id="btnCloseModalKaryawan" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="formKaryawan" autocomplete="off">
+        <div class="modal-body">
+          <div class="form-field">
+            <label for="nama">Nama Lengkap <span class="req">*</span></label>
+            <input type="text" id="nama" placeholder="Masukkan nama lengkap" required />
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="idKaryawan">ID Karyawan</label>
+              <input type="text" id="idKaryawan" placeholder="Otomatis jika kosong" />
+            </div>
+            <div class="form-field">
+              <label for="kategori">Kategori</label>
+              <select id="kategori"><option value="Karyawan">Karyawan</option><option value="Tamu">Tamu</option></select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="posisi">Posisi</label>
+              <input type="text" id="posisi" placeholder="Contoh: Staff, Supervisor" />
+            </div>
+            <div class="form-field">
+              <label for="bagian">Bagian</label>
+              <input type="text" id="bagian" placeholder="Contoh: Produksi, HRD" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="status">Status</label>
+            <select id="status"><option value="Aktif">Aktif</option><option value="Non-Aktif">Non-Aktif</option></select>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" id="btnBatalKaryawan">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Edit Karyawan -->
+  <div class="modal-overlay" id="modalEditKaryawan" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalEditKaryawanTitle">
+      <div class="modal-head">
+        <h3 id="modalEditKaryawanTitle">Edit Data Karyawan</h3>
+        <button type="button" class="modal-close" id="btnCloseModalEditKaryawan" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="formEditKaryawan" autocomplete="off">
+        <div class="modal-body">
+          <div class="form-field">
+            <label for="editIdKaryawan">ID Karyawan <span class="req">*</span></label>
+            <input type="text" id="editIdKaryawan" placeholder="Contoh: K0001" required />
+          </div>
+          <div class="form-field">
+            <label for="editNama">Nama Lengkap <span class="req">*</span></label>
+            <input type="text" id="editNama" placeholder="Masukkan nama lengkap" required />
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="editKategori">Kategori</label>
+              <select id="editKategori"><option value="Karyawan">Karyawan</option><option value="Tamu">Tamu</option></select>
+            </div>
+            <div class="form-field">
+              <label for="editStatus">Status</label>
+              <select id="editStatus"><option value="Aktif">Aktif</option><option value="Non-Aktif">Non-Aktif</option></select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="editPosisi">Posisi</label>
+              <input type="text" id="editPosisi" placeholder="Contoh: Staff, Supervisor" />
+            </div>
+            <div class="form-field">
+              <label for="editBagian">Bagian</label>
+              <input type="text" id="editBagian" placeholder="Contoh: Produksi, HRD" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-foot modal-foot-split">
+          <button type="button" class="btn btn-danger" id="btnHapusKaryawan">Hapus</button>
+          <div class="modal-foot-right">
+            <button type="button" class="btn btn-secondary" id="btnBatalEditKaryawan">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Edit Foto -->
+  <div class="modal-overlay" id="modalEditFoto" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalEditFotoTitle">
+      <div class="modal-head">
+        <h3 id="modalEditFotoTitle">Edit Foto Karyawan</h3>
+        <button type="button" class="modal-close" id="btnCloseModalEditFoto" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="foto-modal-info">
+          <strong id="fotoModalNama">-</strong>
+          <span id="fotoModalId">-</span>
+        </div>
+        <div class="foto-modal-preview" id="fotoModalPreview">
+          <span class="foto-modal-empty">Belum ada foto</span>
+        </div>
+        <div class="foto-modal-actions">
+          <label class="btn btn-primary">
+            Unggah / Ganti Foto
+            <input type="file" accept="image/*" id="fotoModalInput" hidden />
+          </label>
+        </div>
+      </div>
+      <div class="modal-foot modal-foot-split">
+        <button type="button" class="btn btn-danger" id="btnHapusFotoModal">Hapus Foto</button>
+        <div class="modal-foot-right">
+          <button type="button" class="btn btn-secondary" id="btnBatalEditFoto">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal View Kartu -->
+  <div class="modal-overlay" id="modalKartuView" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalKartuViewTitle">
+      <div class="modal-head">
+        <h3 id="modalKartuViewTitle">ID Card Karyawan</h3>
+        <button type="button" class="modal-close" id="btnCloseModalKartuView" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body kartu-view-body"><div id="kartuViewContainer"></div></div>
+      <div class="modal-foot modal-foot-split">
+        <span></span>
+        <div class="modal-foot-right">
+          <button type="button" class="btn btn-secondary" id="btnBatalKartuView">Tutup</button>
+          <button type="button" class="btn btn-primary" id="btnCetakKartu">Cetak Kartu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah Jenis Kartu -->
+  <div class="modal-overlay" id="modalJenisKartu" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalJenisKartuTitle">
+      <div class="modal-head">
+        <h3 id="modalJenisKartuTitle">Tambah Jenis Kartu</h3>
+        <button type="button" class="modal-close" id="btnCloseModalJenisKartu" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="formJenisKartu" autocomplete="off">
+        <div class="modal-body">
+          <div class="form-field">
+            <label for="jkId">ID</label>
+            <input type="text" id="jkId" placeholder="Contoh: JK-01 (otomatis jika kosong)" />
+          </div>
+          <div class="form-field">
+            <label for="jkNama">Nama Jenis Kartu <span class="req">*</span></label>
+            <input type="text" id="jkNama" placeholder="Contoh: Kartu Karyawan, Kartu Tamu" required />
+          </div>
+          <div class="form-field">
+            <label for="jkKeterangan">Keterangan</label>
+            <input type="text" id="jkKeterangan" placeholder="Keterangan (opsional)" />
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" id="btnBatalJenisKartu">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Edit Jenis Kartu -->
+  <div class="modal-overlay" id="modalEditJenisKartu" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalEditJenisKartuTitle">
+      <div class="modal-head">
+        <h3 id="modalEditJenisKartuTitle">Edit Jenis Kartu</h3>
+        <button type="button" class="modal-close" id="btnCloseModalEditJenisKartu" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="formEditJenisKartu" autocomplete="off">
+        <div class="modal-body">
+          <div class="form-field">
+            <label for="editJkId">ID</label>
+            <input type="text" id="editJkId" placeholder="Contoh: JK-01" />
+          </div>
+          <div class="form-field">
+            <label for="editJkNama">Nama Jenis Kartu <span class="req">*</span></label>
+            <input type="text" id="editJkNama" required />
+          </div>
+          <div class="form-field">
+            <label for="editJkKeterangan">Keterangan</label>
+            <input type="text" id="editJkKeterangan" />
+          </div>
+        </div>
+        <div class="modal-foot modal-foot-split">
+          <button type="button" class="btn btn-danger" id="btnHapusJenisKartu">Hapus</button>
+          <div class="modal-foot-right">
+            <button type="button" class="btn btn-secondary" id="btnBatalEditJenisKartu">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Tambah Reservasi -->
+  <div class="modal-overlay" id="modalTambahReservasi" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTambahReservasiTitle">
+      <div class="modal-head">
+        <h3 id="modalTambahReservasiTitle">Tambah Reservasi</h3>
+        <button type="button" class="modal-close" id="btnCloseModalTambahReservasi" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="formTambahReservasi" autocomplete="off">
+        <div class="modal-body">
+          <div class="form-field">
+            <label for="trId">ID Karyawan <span class="req">*</span></label>
+            <input type="text" id="trId" list="trIdDatalist" placeholder="Ketik atau pilih ID karyawan..." required />
+            <datalist id="trIdDatalist"></datalist>
+          </div>
+          <div class="form-field">
+            <label for="trNama">Nama</label>
+            <input type="text" id="trNama" readonly placeholder="Terisi otomatis berdasarkan ID" />
+          </div>
+          <div class="form-field">
+            <label for="trTanggal">Tanggal Reservasi <span class="req">*</span></label>
+            <input type="date" id="trTanggal" required />
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="trLembur">Lembur</label>
+              <select id="trLembur"><option value="Tidak">Tidak</option><option value="Ya">Ya</option></select>
+            </div>
+            <div class="form-field">
+              <label for="trTindakan">Tindakan</label>
+              <select id="trTindakan"><option value="Ambil">Ambil</option><option value="Antar">Antar</option></select>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="trKeterangan">Keterangan</label>
+            <input type="text" id="trKeterangan" placeholder="Keterangan (opsional)" />
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" id="btnBatalTambahReservasi">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Detail Reservasi -->
+  <div class="modal-overlay" id="modalReservasiDetail" hidden>
+    <div class="modal-box modal-box-wide" role="dialog" aria-modal="true" aria-labelledby="modalReservasiDetailTitle">
+      <div class="modal-head">
+        <h3 id="modalReservasiDetailTitle">Detail Reservasi</h3>
+        <button type="button" class="modal-close" id="btnCloseModalReservasiDetail" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-wrapper">
+          <table class="order-table" id="tabelReservasiDetail">
+            <thead><tr><th>ID</th><th>Nama</th><th>Tanggal Reservasi</th><th>Status Lembur</th><th>Tindakan</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div id="reservasiDetailKeterangan" class="reservasi-detail-keterangan" hidden></div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" id="btnBatalReservasiDetail">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Edit Overtime -->
+  <div class="modal-overlay" id="modalEditOvertime" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalEditOvertimeTitle">
+      <div class="modal-head">
+        <h3 id="modalEditOvertimeTitle">Edit Overtime</h3>
+        <button type="button" class="modal-close" id="btnCloseModalEditOvertime" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="formEditOvertime" autocomplete="off">
+        <div class="modal-body">
+          <div class="form-field">
+            <label for="editOtId">ID Overtime</label>
+            <input type="text" id="editOtId" readonly />
+          </div>
+          <div class="form-field">
+            <label for="editOtNama">Nama</label>
+            <input type="text" id="editOtNama" readonly />
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="editOtTanggal">Tanggal <span class="req">*</span></label>
+              <input type="date" id="editOtTanggal" required />
+            </div>
+            <div class="form-field">
+              <label for="editOtStatus">Status</label>
+              <select id="editOtStatus"><option value="aktif">Aktif</option><option value="release">Released</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-foot modal-foot-split">
+          <button type="button" class="btn btn-danger" id="btnHapusOvertime">Hapus</button>
+          <div class="modal-foot-right">
+            <button type="button" class="btn btn-secondary" id="btnBatalEditOvertime">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Edit Release Reservasi -->
+  <div class="modal-overlay" id="modalEditReleaseReservasi" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalEditReleaseReservasiTitle">
+      <div class="modal-head">
+        <h3 id="modalEditReleaseReservasiTitle">Edit Status Release</h3>
+        <button type="button" class="modal-close" id="btnCloseModalEditReleaseReservasi" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="formEditReleaseReservasi" autocomplete="off">
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="editRelKode">Kode Transaksi</label>
+              <input type="text" id="editRelKode" readonly />
+            </div>
+            <div class="form-field">
+              <label for="editRelTanggal">Tanggal</label>
+              <input type="text" id="editRelTanggal" readonly />
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="editRelNama">Nama</label>
+              <input type="text" id="editRelNama" readonly />
+            </div>
+            <div class="form-field">
+              <label for="editRelBagian">Bagian</label>
+              <input type="text" id="editRelBagian" readonly />
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="editRelStatus">Status <span class="req">*</span></label>
+            <select id="editRelStatus"><option value="released">Sudah Release</option><option value="pending">Belum Release</option></select>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" id="btnBatalEditReleaseReservasi">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL TAMBAH/EDIT USER -->
+  <div class="modal-overlay" id="modalUser" hidden>
+    <div class="modal-box modal-box-wide" role="dialog" aria-modal="true" aria-labelledby="modalUserTitle">
+      <div class="modal-head">
+        <h3 id="modalUserTitle">Tambah User</h3>
+        <button type="button" class="modal-close" id="btnCloseModalUser" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="formUser" autocomplete="off">
+        <div class="modal-body" style="max-height: 70vh;">
+          <input type="hidden" id="userId" />
+          
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="userUsername">Username <span class="req">*</span></label>
+              <input type="text" id="userUsername" required />
+            </div>
+            <!-- FIX: ID diubah dari userName menjadi userFullName -->
+            <div class="form-field">
+              <label for="userFullName">Nama Lengkap <span class="req">*</span></label>
+              <input type="text" id="userFullName" required />
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label for="userPassword">Password <span class="req" id="reqPass" style="display:none;">*</span></label>
+              <input type="password" id="userPassword" placeholder="Kosongkan jika tidak diubah" />
+            </div>
+            <div class="form-field">
+              <label for="userRole">Role</label>
+              <select id="userRole">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-field" style="flex-direction: row; align-items: center; gap: 8px; margin-top: 8px;">
+            <input type="checkbox" id="userActive" style="width: 16px; height: 16px; margin: 0;" checked />
+            <label for="userActive" style="margin: 0; cursor: pointer;">Aktif (bisa login)</label>
+          </div>
+
+          <div class="form-field mt-16">
+            <label>Izin Akses (khusus role User)</label>
+            <div class="permission-list">
+              <div class="permission-row">
+                <span class="permission-name">Dashboard</span>
+                <label><input type="checkbox" data-menu="dashboard" data-action="lihat" /> Lihat</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Karyawan</span>
+                <label><input type="checkbox" data-menu="karyawan" data-action="lihat" /> Lihat</label>
+                <label><input type="checkbox" data-menu="karyawan" data-action="edit" /> Edit</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Foto</span>
+                <label><input type="checkbox" data-menu="foto" data-action="lihat" /> Lihat</label>
+                <label><input type="checkbox" data-menu="foto" data-action="edit" /> Edit</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Kartu</span>
+                <label><input type="checkbox" data-menu="kartu" data-action="lihat" /> Lihat</label>
+                <label><input type="checkbox" data-menu="kartu" data-action="cetak" /> Cetak</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Jenis Kartu</span>
+                <label><input type="checkbox" data-menu="jenisKartu" data-action="lihat" /> Lihat</label>
+                <label><input type="checkbox" data-menu="jenisKartu" data-action="edit" /> Edit</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Reservasi</span>
+                <label><input type="checkbox" data-menu="reservasi" data-action="lihat" /> Lihat</label>
+                <label><input type="checkbox" data-menu="reservasi" data-action="edit" /> Edit</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Overtime</span>
+                <label><input type="checkbox" data-menu="overtime" data-action="lihat" /> Lihat</label>
+                <label><input type="checkbox" data-menu="overtime" data-action="edit" /> Edit</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Release</span>
+                <label><input type="checkbox" data-menu="release" data-action="lihat" /> Lihat</label>
+                <label><input type="checkbox" data-menu="release" data-action="edit" /> Edit</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Presensi</span>
+                <label><input type="checkbox" data-menu="presensi" data-action="lihat" /> Lihat</label>
+                <label><input type="checkbox" data-menu="presensi" data-action="hapus" /> Hapus</label>
+              </div>
+              <div class="permission-row">
+                <span class="permission-name">Scanner QR</span>
+                <label><input type="checkbox" data-menu="scanner" data-action="pakai" /> Pakai</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-foot modal-foot-split">
+          <button type="button" class="btn btn-danger" id="btnHapusUser" style="display: none;">Hapus</button>
+          <div class="modal-foot-right">
+            <button type="button" class="btn btn-secondary" id="btnBatalUser">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/akses.js"></script>
+  <script src="js/karyawan.js"></script>
+  <script src="js/foto.js"></script>
+  <script src="js/jeniskartu.js"></script>
+  <script src="js/reservasi.js"></script>
+  <script src="js/presensi.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/user.js"></script>
+  <script src="js/qrcode.js"></script>
+  <script src="js/scanner.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
