@@ -10,12 +10,7 @@ const JenisKartu = (() => {
   const sortConfig = { field: 'id', direction: 'asc' };
 
   /* ------------------------------------------------------------
-     [2] HELPER — generate ID default berurutan JK-01, JK-02, ...
-     - Format: "JK-" + 2 digit (padStart 2), contoh JK-01, JK-99,
-       JK-100 (otomatis lebih dari 2 digit jika perlu)
-     - Gap-filling: slot kosong diisi lebih dulu
-     - Pengecekan case-insensitive agar "jk-01" tidak bentrok
-       dengan "JK-01"
+     [2] HELPER — generate ID default berurutan JK-01, JK-02
      ------------------------------------------------------------ */
   function nextDefaultId() {
     const existing = new Set(
@@ -204,10 +199,7 @@ const JenisKartu = (() => {
     j.id = newId;
     j.nama = nama;
     j.keterangan = (document.getElementById('editJkKeterangan').value || '').trim();
-    // `warna` tidak lagi diubah di sini. Record lama yang masih
-    // punya properti `warna` dibiarkan sebagai data lama (unused).
 
-    // Sinkronkan kategori karyawan yang memakai nama lama
     if (oldNama !== nama) {
       Storage.getKaryawan().forEach((k) => {
         if (String(k.kategori || '').toLowerCase() === oldNama.toLowerCase()) {
