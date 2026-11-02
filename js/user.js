@@ -79,7 +79,7 @@ const User = (() => {
     const titleEl = document.getElementById('modalUserTitle');
     const idEl = document.getElementById('userId');
     const unEl = document.getElementById('userUsername');
-    const nmEl = document.getElementById('userFullName'); // FIX: Menggunakan ID yang benar
+    const nmEl = document.getElementById('userFullName');
     const pwEl = document.getElementById('userPassword');
     const roleEl = document.getElementById('userRole');
     const actEl = document.getElementById('userActive');
@@ -93,7 +93,7 @@ const User = (() => {
       titleEl.textContent = 'Edit User';
       idEl.value = user.id;
       unEl.value = user.username;
-      nmEl.value = user.name; // FIX
+      nmEl.value = user.name;
       pwEl.value = ''; 
       pwEl.required = false;
       reqPass.style.display = 'none';
@@ -116,7 +116,7 @@ const User = (() => {
       titleEl.textContent = 'Tambah User';
       idEl.value = '';
       unEl.value = '';
-      nmEl.value = ''; // FIX
+      nmEl.value = '';
       pwEl.value = '';
       pwEl.required = true;
       reqPass.style.display = 'inline';
@@ -141,7 +141,7 @@ const User = (() => {
 
     const id = document.getElementById('userId').value;
     const username = document.getElementById('userUsername').value.trim();
-    const name = document.getElementById('userFullName').value.trim(); // FIX: Mengambil nilai dengan benar
+    const name = document.getElementById('userFullName').value.trim();
     const password = document.getElementById('userPassword').value;
     const role = document.getElementById('userRole').value;
     const isActive = document.getElementById('userActive').checked ? 1 : 0;
