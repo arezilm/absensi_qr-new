@@ -1,25 +1,8 @@
-/* ============================================================
-   EXPORT TOOLS — Print & Export Excel (.xlsx) untuk tabel daftar
-   ------------------------------------------------------------
-   Menu yang didukung:
-     Karyawan, Reservasi, Reservasi Overtime, Release Reservasi,
-     Presensi.
-   Cara kerja:
-     - Tombol "Print" & "Export Excel" disisipkan otomatis ke
-       header kartu daftar (.info-header) masing-masing menu.
-     - Data diambil dari tabel yang sedang tampil (kolom "Aksi"
-       dilewati), jadi hasilnya sama persis dengan isi daftar,
-       termasuk pencarian / filter tanggal yang sedang aktif.
-       Kosongkan filter bila ingin mencetak/mengekspor semuanya.
-     - File .xlsx dibuat langsung di browser (tanpa library &
-       tanpa internet).
-   ============================================================ */
 const ExportTools = (() => {
   const COMPANY = 'PT. LEUWITEX';
 
   /* ------------------------------------------------------------
      [1] KONFIGURASI PER MENU
-         filters: [id input, label] → ditampilkan di laporan
      ------------------------------------------------------------ */
   const CONFIGS = [
     {
@@ -116,7 +99,6 @@ const ExportTools = (() => {
 
   /* ------------------------------------------------------------
      [3] BACA DATA DARI TABEL
-         Mengembalikan { headers, rows, filterText } atau null
      ------------------------------------------------------------ */
   function readTable(cfg) {
     const table = document.getElementById(cfg.table);
@@ -153,8 +135,7 @@ const ExportTools = (() => {
   }
 
   /* ------------------------------------------------------------
-     [4] PRINT — lewat iframe tersembunyi (tidak mengganggu
-         #printArea untuk cetak kartu)
+     [4] PRINT — lewat iframe tersembunyi
      ------------------------------------------------------------ */
   function buildPrintHtml(cfg, data) {
     const head = data.headers.map((h) => `<th>${esc(h)}</th>`).join('');
@@ -235,12 +216,12 @@ const ExportTools = (() => {
         alert('Gagal membuka dialog cetak.');
         cleanup();
       }
-      setTimeout(cleanup, 60000); // cadangan bila afterprint tidak terpicu
+      setTimeout(cleanup, 60000);
     }, 250);
   }
 
   /* ------------------------------------------------------------
-     [5] XLSX — penulis file .xlsx minimal (ZIP "store", tanpa library)
+     [5] XLSX — penulis file .xlsx
      ------------------------------------------------------------ */
   const enc = new TextEncoder();
 
@@ -280,8 +261,8 @@ const ExportTools = (() => {
       const local = new DataView(new ArrayBuffer(30));
       local.setUint32(0, 0x04034b50, true);
       local.setUint16(4, 20, true);
-      local.setUint16(6, 0x0800, true); // nama file UTF-8
-      local.setUint16(8, 0, true); // tanpa kompresi
+      local.setUint16(6, 0x0800, true);
+      local.setUint16(8, 0, true);
       local.setUint16(10, dosTime, true);
       local.setUint16(12, dosDate, true);
       local.setUint32(14, crc, true);
@@ -350,7 +331,6 @@ const ExportTools = (() => {
     return s;
   }
 
-  // Indeks style (lihat STYLES_XML): 1 judul, 2 info, 3 header, 4 isi, 5 isi-tengah
   const STYLES_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
 <fonts count="4">
@@ -393,7 +373,6 @@ const ExportTools = (() => {
     const colCount = headers.length;
     const lastCol = colName(colCount - 1);
 
-    // Lebar kolom otomatis (berdasarkan teks terpanjang)
     const widths = headers.map((h, ci) => {
       let max = String(h).length;
       rows.forEach((r) => {
@@ -420,7 +399,7 @@ const ExportTools = (() => {
       r++;
     });
 
-    r++; // baris kosong pemisah
+    r++;
 
     const headerRow = r;
     sheetRows.push(
