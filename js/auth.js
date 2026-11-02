@@ -69,7 +69,6 @@ const Auth = (() => {
   }
 
   function logout() {
-    // Akhiri sesi PHP (abaikan jika gagal)
     try { fetch(`${API_URL}?action=logout`, { method: 'POST' }).catch(() => {}); } catch { /* ignore */ }
     currentUser = null;
     try { sessionStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
