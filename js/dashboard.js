@@ -5,17 +5,14 @@ const Dashboard = (() => {
      [1] RENDER UTAMA — panggil semua sub-render
      ------------------------------------------------------------ */
   function render() {
-    // Auto-release overtime yang tanggalnya sudah lewat
     if (typeof Storage.autoReleaseStaleOvertime === 'function') {
       Storage.autoReleaseStaleOvertime();
     }
 
-    // Safety net: arsipkan makan kemarin untuk semua karyawan
     if (typeof Storage.cleanupStaleMeals === 'function') {
       Storage.cleanupStaleMeals();
     }
 
-    // Safety net: arsipkan reservasi manual kemarin (cegah penumpukan)
     if (typeof Storage.cleanupStaleReservasiManual === 'function') {
       Storage.cleanupStaleReservasiManual();
     }
@@ -26,9 +23,6 @@ const Dashboard = (() => {
     const belum = total - hadir;
 
     const today = Storage.todayLocalISO();
-    // Hitung per KUPON (bukan per karyawan), supaya kupon tambahan
-    // setelah reset overtime ikut terhitung. Kunci unik = kode kupon;
-    // jika kode kosong, pakai id record agar tidak hitung ganda.
     const kuponKeys = new Set();
 
     list.forEach((k) => {
