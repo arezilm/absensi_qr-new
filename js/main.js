@@ -74,12 +74,10 @@
 
   function activateTab(tab) {
     const user = Auth.getUser();
-    // Guard: Jika bukan admin, jangan izinkan akses tab pengaturan
     if (PENGATURAN_TABS.includes(tab) && user?.role !== 'admin') {
       return activateTab(Akses.firstAllowedTab() || 'dashboard');
     }
 
-    // Guard hak akses: tab tanpa izin "lihat" dialihkan ke tab pertama yang boleh
     if (!Akses.canOpenTab(tab)) {
       const fallback = Akses.firstAllowedTab();
       if (fallback && fallback !== tab) return activateTab(fallback);
@@ -178,8 +176,7 @@
       const expanded = String(!collapsed);
       btnOpen?.setAttribute('aria-expanded', expanded);
       btnClose?.setAttribute('aria-expanded', expanded);
-      // Preferensi hanya disimpan untuk desktop, supaya state desktop
-      // tidak membuat sidebar mobile "terkunci"/tidak bisa dibuka.
+
       if (persist && !isMobile()) {
         try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch { /* ignore */ }
       }
