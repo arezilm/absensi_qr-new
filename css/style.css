@@ -25,7 +25,6 @@ body.modal-open {
   overflow: hidden;
 }
 
-
 /* ============================================================
    [2] UTILS — helper class umum
    ============================================================ */
@@ -53,7 +52,6 @@ body.modal-open {
   margin-bottom: 12px;
   flex-wrap: wrap;
 }
-
 
 /* ============================================================
    [3] BUTTONS — semua varian .btn
@@ -101,7 +99,6 @@ body.modal-open {
   font-size: 0.78rem;
   border-radius: 6px;
 }
-
 
 /* ============================================================
    [4] FORMS — semua elemen input, select, label, error state
@@ -178,7 +175,6 @@ input.input-error:focus {
   max-width: 240px;
 }
 
-
 /* ============================================================
    [5] BADGES — label status berwarna
    ============================================================ */
@@ -224,7 +220,6 @@ input.input-error:focus {
   background: #fef2f2;
   color: #b91c1c;
 }
-
 
 /* ============================================================
    [6] TABLES
@@ -652,7 +647,6 @@ input.input-error:focus {
   margin-right: 4px;
 }
 
-
 /* ============================================================
    [7] APP SHELL — layout utama
    ============================================================ */
@@ -988,8 +982,6 @@ input.input-error:focus {
   overflow-y: auto;
 }
 
-/* Style .page-title / .page-subtitle tetap ada untuk kompatibilitas,
-   tapi sudah tidak dipakai karena judul sudah pindah ke topbar. */
 .page-title {
   margin-bottom: 18px;
 }
@@ -1021,7 +1013,6 @@ input.input-error:focus {
 .panel.active {
   display: block;
 }
-
 
 /* ============================================================
    [8] LOGIN SCREEN
@@ -1149,7 +1140,6 @@ input.input-error:focus {
 .login-hint strong {
   color: #475569;
 }
-
 
 /* ============================================================
    [9] DASHBOARD — semua widget panel dashboard
@@ -1343,9 +1333,6 @@ input.input-error:focus {
   color: #0f172a;
 }
 
-/* [9.6] Action bar — DIHAPUS (fitur Export JSON & Reset Data sudah tidak dipakai) */
-
-
 /* ============================================================
    [10] SCANNER — kartu scan + hasil scan + pesan scan
    ============================================================ */
@@ -1528,7 +1515,6 @@ input.input-error:focus {
 .scan-msg-ok  { background: #ecfdf5; color: #065f46; }
 .scan-msg-err { background: #fef2f2; color: #991b1b; }
 .scan-msg-warn{ background: #fffbeb; color: #92400e; }
-
 
 /* ============================================================
    [11] MODAL — semua dialog popup
@@ -1739,7 +1725,6 @@ input.input-error:focus {
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
 }
 
-
 /* ============================================================
    [12] ID CARD — kartu karyawan (dipakai di view & print)
    ============================================================ */
@@ -1921,7 +1906,6 @@ input.input-error:focus {
   letter-spacing: 1px;
 }
 
-
 /* ============================================================
    [13] FOTO — galeri foto (legacy, tidak dipakai di UI saat ini)
    ============================================================ */
@@ -1994,7 +1978,6 @@ input.input-error:focus {
   justify-content: center;
   cursor: pointer;
 }
-
 
 /* ============================================================
    [14] PRINT AREA — kartu untuk cetak
@@ -2124,7 +2107,6 @@ input.input-error:focus {
 
 /* ---------- [15.2] <= 768px ---------- */
 @media (max-width: 768px) {
-  /* --- App shell --- */
   .app {
     min-height: 100vh;
     min-height: 100dvh;
