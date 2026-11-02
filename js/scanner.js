@@ -77,9 +77,6 @@ const Scanner = (() => {
     return `${y}-${m}-${day}`;
   }
 
-  /* Cek apakah ada reservasi manual untuk karyawan ini pada tanggal
-     lokal hari ini. Dipakai agar scan tidak memberi kupon kedua
-     saat kupon lembur sudah dicatat manual. */
   function hasManualToday(karyawanId) {
     if (!karyawanId) return false;
     const today = todayLocalISO();
@@ -128,18 +125,16 @@ const Scanner = (() => {
     const kuponToday = makanToday || manualToday;
 
     // --- STATE 1: belum absen hari ini → catat ABSENSI MASUK ---
-    // (absen sebelum jam masuk tidak masalah)
     if (!absenToday) {
       karyawan.absen = true;
       karyawan.absenAt = nowIso;
-      delete karyawan.pulangAt; // sisa hari sebelumnya
+      delete karyawan.pulangAt;
       Storage.addRiwayat(karyawan.nama, 'Absensi');
       Storage.catatPresensiMasuk(karyawan, nowIso);
       Storage.save();
       showEmployee(karyawan, 'ok', 'Absensi masuk berhasil dicatat');
     }
     // --- STATE 2: belum punya kupon hari ini → beri KUPON MAKAN ---
-    // Termasuk kupon tambahan (1×) setelah reset lembur.
     else if (!kuponToday) {
       karyawan.makan = true;
       karyawan.makanAt = nowIso;
@@ -192,7 +187,6 @@ const Scanner = (() => {
       showEmployee(karyawan, 'warn', 'Sudah absen pulang & kupon makan hari ini sudah diambil');
     }
 
-    // Sinkronkan tampilan
     Karyawan.render();
     if (typeof Dashboard !== 'undefined') Dashboard.render();
 
