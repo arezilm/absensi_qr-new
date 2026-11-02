@@ -30,9 +30,6 @@ const Presensi = (() => {
 
   /* ------------------------------------------------------------
      [2] STATUS LEMBUR
-         Lembur jika absen pulang tercatat lembur, ATAU karyawan
-         punya catatan overtime pada tanggal tersebut (reset
-         otomatis dari presensi pulang maupun reset manual).
      ------------------------------------------------------------ */
   function isLembur(p) {
     if (p.lembur) return true;
