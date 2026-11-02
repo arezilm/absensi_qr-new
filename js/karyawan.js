@@ -7,7 +7,6 @@ const Karyawan = (() => {
   let bound = false;
   let editingId = null;
 
-  // State khusus modal Edit — untuk auto-update ID saat kategori berubah
   let originalId = null;
   let originalKategori = null;
   let userManuallyEditedId = false;
@@ -193,7 +192,6 @@ const Karyawan = (() => {
     const statusEl = document.getElementById('editStatus');
     if (statusEl) statusEl.value = k.status || 'Aktif';
 
-    // Pasang listener khusus modal Edit (sekali saja)
     bindEditListeners();
 
     const modal = document.getElementById('modalEditKaryawan');
@@ -225,7 +223,6 @@ const Karyawan = (() => {
     const idEl = document.getElementById('editIdKaryawan');
     if (idEl) {
       idEl.addEventListener('input', () => {
-        // Tandai user sudah mengetik ID secara manual
         userManuallyEditedId = true;
       });
     }
@@ -239,9 +236,7 @@ const Karyawan = (() => {
   }
 
   /* ------------------------------------------------------------
-     [5.b] LISTENER — saat kategori diubah di modal Edit
-     Auto-regenerate ID ke prefix kategori baru, hanya jika
-     user belum mengetik ID secara manual.
+     [5.b] LISTENER
      ------------------------------------------------------------ */
   function onEditKategoriChange() {
     if (originalId === null || originalKategori === null) return;
@@ -254,14 +249,11 @@ const Karyawan = (() => {
     const newKategori = katEl.value;
 
     if (newKategori === originalKategori) {
-      // Kembali ke kategori semula → kembalikan ID semula
       idEl.value = originalId;
     } else {
-      // Kategori berubah → hitung ID baru dengan prefix kategori baru
       idEl.value = nextDefaultIdExcluding(newKategori, originalId);
     }
 
-    // Nilai baru di-set secara programatik, jadi bukan "user edit"
     userManuallyEditedId = false;
   }
 
@@ -353,7 +345,6 @@ const Karyawan = (() => {
       return;
     }
 
-    // ID default mengikuti kategori (K/T/... dari nama jenis kartu)
     if (!id) id = nextDefaultId(kategori);
 
     const list = Storage.getKaryawan();
@@ -415,11 +406,6 @@ const Karyawan = (() => {
 
   /* ------------------------------------------------------------
      [7.b] HELPER — prefix ID berdasarkan nama kategori
-       "Kartu Karyawan"   → K
-       "Kartu Tamu"       → T
-       "Kartu Supervisor" → S
-       "Karyawan"         → K
-       "Tamu"             → T
      ------------------------------------------------------------ */
   function idPrefixFromKategori(kategori) {
     const s = String(kategori || '').trim();
@@ -438,7 +424,6 @@ const Karyawan = (() => {
 
   /* ------------------------------------------------------------
      [7.c] HELPER — generate ID default untuk TAMBAH
-     Slot kosong diisi lebih dulu (gap-filling).
      ------------------------------------------------------------ */
   function nextDefaultId(kategori) {
     const prefix = idPrefixFromKategori(kategori);
@@ -456,9 +441,6 @@ const Karyawan = (() => {
 
   /* ------------------------------------------------------------
      [7.d] HELPER — generate ID default untuk EDIT
-     Sama seperti nextDefaultId, tapi mengecualikan record yang
-     sedang diedit agar ID lama bisa dipakai ulang saat kategori
-     dikembalikan ke semula.
      ------------------------------------------------------------ */
   function nextDefaultIdExcluding(kategori, excludeId) {
     const prefix = idPrefixFromKategori(kategori);
@@ -479,7 +461,6 @@ const Karyawan = (() => {
 
   /* ------------------------------------------------------------
      [7.e] HELPER — sinkronisasi referensi ID karyawan
-     Dipakai saat ID karyawan diubah lewat modal Edit.
      ------------------------------------------------------------ */
   function reassignReferences(oldId, newId) {
     if (!oldId || !newId || oldId === newId) return false;
@@ -641,7 +622,6 @@ const Karyawan = (() => {
     simpanEdit,
     setSort,
     fillKategoriOptions,
-    // Helper di-expose agar bisa dipakai modul lain jika perlu
     idPrefixFromKategori,
     nextDefaultId,
   };
