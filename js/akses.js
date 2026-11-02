@@ -15,7 +15,6 @@ const Akses = (() => {
     presensi:             'presensi',
   };
 
-  // Urutan prioritas tab saat mencari halaman pertama yang boleh dibuka
   const TAB_ORDER = [
     'dashboard', 'karyawan', 'foto', 'kartu', 'jenis-kartu',
     'reservasi', 'reservasi-overtime', 'release-reservasi', 'presensi',
@@ -23,10 +22,6 @@ const Akses = (() => {
 
   /* ------------------------------------------------------------
      [2] ATURAN AKSI
-         selectors : tombol/elemen yang disembunyikan & diblokir klik
-         forms     : id form yang diblokir submit-nya
-         changes   : id input yang diblokir event change-nya
-         closest   : [selector, ancestor] → sembunyikan ancestor
      ------------------------------------------------------------ */
   const RULES = [
     {
