@@ -38,11 +38,6 @@ const Utils = (() => {
 
   /* ------------------------------------------------------------
      [3.b] NORMALISASI TANGGAL → 'YYYY-MM-DD' pada zona waktu LOKAL
-         - 'YYYY-MM-DD' murni dikembalikan apa adanya
-         - ISO UTC (…T20:00:00.000Z) dikonversi ke tanggal lokal
-         JANGAN pakai String(x).slice(0, 10) pada ISO UTC: di WIB
-         (UTC+7) hasilnya bisa tanggal kemarin dan membuat hitungan
-         makan di Dashboard hilang.
      ------------------------------------------------------------ */
   function toLocalISODate(value) {
     if (!value) return '';
@@ -58,15 +53,12 @@ const Utils = (() => {
 
   /* ------------------------------------------------------------
      [3.c] JAM KERJA — ubah angka di sini bila aturan berubah
-         Masuk 08:00, pulang 16:00 (8 jam kerja).
-         Absen masuk sebelum 08:00 tidak masalah.
-         Lembur = absen pulang sudah lewat 2 jam dari jam pulang
-         (>= 18:00) → kupon makan di-reset otomatis.
+     Atur jam disini untuk otomatis kupon makan lembur
      ------------------------------------------------------------ */
   const WORK = {
-    MASUK: '21:38',              // jam masuk (info saja, tidak menolak absen lebih awal)
-    PULANG: '21:38',             // absen pulang baru bisa mulai jam ini (format 'HH:MM' atau 'HH:MM:SS')
-    LEMBUR_SETELAH_MENIT: 120,   // lembur jika pulang >= PULANG + menit ini (boleh desimal, 0.5 = 30 detik)
+    MASUK: '21:38',              // jam masuk
+    PULANG: '21:38',             // jam pulang
+    LEMBUR_SETELAH_MENIT: 120,   // lembur jika pulang >= PULANG
   };
 
   // 'HH:MM' / 'HH:MM:SS' → detik sejak 00:00
@@ -95,7 +87,6 @@ const Utils = (() => {
 
   /* ------------------------------------------------------------
      [3.d] SORTING TABEL — klik header kolom (ID / Nama)
-         cfg = { field, direction }; header: <th class="sortable" data-sort="id">
      ------------------------------------------------------------ */
   function sortBy(list, field, direction) {
     const angka = (v) => {
@@ -156,7 +147,6 @@ const Utils = (() => {
 
   /* ------------------------------------------------------------
      [5] GENERATE KODE TRANSAKSI — TR-YYMM-XXX (auto-increment)
-         Referensi: reservasi manual, kupon karyawan, arsip reservasi
      ------------------------------------------------------------ */
   function nextKodeTransaksi() {
     const now = new Date();
@@ -208,10 +198,6 @@ const Utils = (() => {
 
   /* ------------------------------------------------------------
      [5.b] GENERATE KODE OVERTIME — OT-YYMM-XXX (auto-increment)
-         Format: OT-<YY><MM>-<seq 3 digit>
-         Contoh: OT-2610-001, OT-2610-002, ...
-         Hanya menghitung ID yang berformat baru (suffix ≥ 3 digit)
-         agar tidak bentrok dengan ID lama hasil makeId('OT').
      ------------------------------------------------------------ */
   function nextKodeOvertime() {
     const now = new Date();
@@ -227,7 +213,7 @@ const Utils = (() => {
           const kode = String(r.id || '');
           if (!kode.startsWith(prefix)) return;
           const suffix = kode.slice(prefix.length);
-          // Hanya hitung format baru: 3 digit atau lebih, semua angka
+          
           if (!/^\d{3,}$/.test(suffix)) return;
           const seq = parseInt(suffix, 10);
           if (Number.isFinite(seq) && seq > maxSeq) maxSeq = seq;
