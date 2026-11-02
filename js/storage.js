@@ -50,8 +50,6 @@ const Storage = (() => {
         lastSynced  = snapshot();
         initialized = true;
       } finally {
-        // Selalu bersihkan initPromise agar percobaan berikutnya
-        // (setelah jaringan pulih) bisa benar-benar fetch ulang.
         initPromise = null;
       }
     })();
@@ -233,7 +231,6 @@ const Storage = (() => {
   }
 
   // Isi presensi hari ini dari data karyawan yang sudah absen
-  // sebelum fitur presensi ada. Return true jika ada perubahan.
   function backfillPresensiHariIni() {
     let changed = false;
     karyawan.forEach((k) => {
@@ -382,10 +379,6 @@ const Storage = (() => {
 
   // ------------------------------------------------------------
   // LEMBUR OTOMATIS - dipanggil saat absen pulang >= jam lembur
-  //   - arsipkan kupon makan hari ini (scan / manual) sebagai lembur
-  //   - buat catatan overtime (aktif) hari ini
-  //   - hanya 1x per karyawan per hari
-  // Return true jika reset dilakukan.
   // ------------------------------------------------------------
   function autoResetLembur(k) {
     if (!k) return false;
@@ -418,7 +411,7 @@ const Storage = (() => {
         nama: k.nama,
         bagian: k.bagian || '',
         tanggal: k.makanAt,
-        lembur: 'Tidak', // kupon pertama = kupon normal
+        lembur: 'Tidak',
         tindakan: 'Ambil',
         keterangan: 'Reset otomatis lembur (presensi pulang)',
         released: k.kuponReleased !== false,
@@ -446,7 +439,7 @@ const Storage = (() => {
         nama: k.nama,
         bagian: k.bagian || '',
         tanggal: r.tanggal || nowIso,
-        lembur: 'Tidak', // kupon pertama = kupon normal
+        lembur: 'Tidak',
         tindakan: r.tindakan || 'Ambil',
         keterangan: 'Reset otomatis lembur (presensi pulang)',
         released: !!r.released,
