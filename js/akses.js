@@ -1,12 +1,3 @@
-/* ============================================================
-   AKSES — penerapan hak akses per menu & per aksi
-   ------------------------------------------------------------
-   Data izin berasal dari Kelola User (user.permissions):
-     { karyawan: { lihat: true, edit: true }, presensi: { lihat: true }, ... }
-   - Admin  : otomatis semua akses.
-   - User   : hanya yang dicentang. Aksi apa pun (edit/hapus/cetak/
-              pakai) otomatis mengizinkan "lihat" menu tersebut.
-   ============================================================ */
 const Akses = (() => {
 
   /* ------------------------------------------------------------
