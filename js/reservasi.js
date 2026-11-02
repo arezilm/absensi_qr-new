@@ -74,7 +74,7 @@ const TransaksiHelper = (() => {
 })();
 
 /* ============================================================
-   [2] Reservasi — daftar live/manual/archive + tambah + view
+   [2] Reservasi
    ============================================================ */
 const Reservasi = (() => {
   const { escapeHtml } = Utils;
@@ -188,8 +188,7 @@ const Reservasi = (() => {
     const today = Storage.todayLocalISO
       ? Storage.todayLocalISO()
       : TransaksiHelper.todayISO();
-    // "Ada Lembur" hanya untuk kupon TAMBAHAN: yaitu jika kupon pertama
-    // hari ini sudah diarsipkan oleh reset lembur (manual / otomatis).
+
     return Storage.getReservasiArchive().some(
       (r) =>
         r.karyawanId === karyawanId &&
@@ -327,9 +326,7 @@ const Reservasi = (() => {
       return;
     }
 
-    /* --- Validasi 3: arsip di tanggal yang sama ---
-       Skip arsip yang berasal dari Reset Overtime (lembur = 'Ya' atau
-       keterangan memuat 'lembur') agar tidak memblokir kupon lembur. */
+    /* --- Validasi 3: arsip di tanggal yang sama --- */
     const duplicateArchive = Storage.getReservasiArchive().find((r) => {
       if (r.karyawanId !== karyawan.id) return false;
       if (r.lembur === 'Ya') return false;
@@ -740,7 +737,7 @@ const ReservasiOvertime = (() => {
         nama: karyawan.nama,
         bagian: karyawan.bagian || '',
         tanggal: karyawan.makanAt || nowIso,
-        lembur: 'Tidak', // kupon pertama = kupon normal
+        lembur: 'Tidak',
         tindakan: 'Ambil',
         keterangan: 'Diarsipkan untuk lembur',
         released: karyawan.kuponReleased !== false,
@@ -765,7 +762,7 @@ const ReservasiOvertime = (() => {
           nama: karyawan.nama,
           bagian: karyawan.bagian || '',
           tanggal: r.tanggal || nowIso,
-          lembur: 'Tidak', // kupon pertama = kupon normal
+          lembur: 'Tidak',
           tindakan: r.tindakan || 'Ambil',
           keterangan: 'Diarsipkan untuk lembur',
           released: !!r.released,
